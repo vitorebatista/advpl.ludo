@@ -18,4 +18,4 @@ Esta aplicação é um jogo de tabuleiro muito conhecido chamado [Ludo] (http://
 
 
 <pre>
-Copyright 2012 Vitor Emanuel Batista
+Copyright 2010 Vitor Emanuel Batista
