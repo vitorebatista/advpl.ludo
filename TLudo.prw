@@ -1,26 +1,31 @@
 #INCLUDE "PROTHEUS.CH"
 
-#DEFINE __cDirectory__ GetTempPath() //+"LUDO"+If(IsSrvUnix(),"/","\") //"C:\LUDO\" //
+#DEFINE __cDirectory__ GetTempPath() //Define que as imagens estarão no arquivo temporário do usuário
+
+//-----------------------------------------
+// Define que o FwBalloon será informativo
+//-----------------------------------------
+#Define FW_BALLOON_INFORMATION	3 
+
+//---------------------------------------------------------
+// Define o layout do FwBalloon de acordo com sua posição
+//---------------------------------------------------------
+#Define BALLOON_POS_TOP_MIDDLE     02
+#Define BALLOON_POS_BOTTOM_MIDDLE  05
 
 Static cMGet := ""
 
-user function abc()
-return
+Static oBalloon
+
+//---------------------------------------------------------------------
+/*/{Protheus.doc} TLudo
+Classe principal do jogo Ludo
+
+@author Felipe Nathan Welter
+@author Vitor Emanuel Batista
+@since 08/09/2010
 /*/
-ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
-±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
-±±³Classe    ³TLudo      ³Autor ³ Felipe Nathan Welter  ³ Data ³08/09/2010³±±
-±±³          ³           ³      ³ Vitor Emanuel Batista ³      ³          ³±±
-±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
-±±³Descricao ³                                                            ³±±
-±±³          ³                                                            ³±±
-±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
-±±³ Uso      ³ GENERICO                                                   ³±±
-±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
-±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
-/*/
+//-------------------------------------------------------------------
 Class TLudo
 
 	DATA nRow    AS INTEGER
@@ -143,6 +148,11 @@ Method New(nRow,nCol,nWidth,nHeight,oWnd) Class TLudo
 		::oPlayer4 := 	TPlayer():New(2,::oKingdom4)
 
 		::StatusMsg("Tire o número 1 ou 6 para sair com o peão.")
+		
+	
+	oBalloon := FWBalloon():New(190 , 550 ,150,120,::oTPanel,"Bem Vindo!",'Para iniciar com o jogo você deve "jogar" o dado. Torça para tirar os números 1 ou 6...', ;
+					FW_BALLOON_INFORMATION,BALLOON_POS_BOTTOM_MIDDLE)
+		
 Return Self
 
 //--------------------------------------------------------
@@ -164,7 +174,7 @@ Method PrintDice(nValue) Class TLUDO
 	EndIf
 
 	::oTPanel:addShape("id="+cValToChar(::nIdDice)+";type=8;left="+cValToChar(nCol)+";top="+cValToChar(nRow)+";"+;
-					";width=730;height=722;image-file="+::DirectoryImg()+"\DADO"+cValToChar(nValue)+".png;can-move=0;can-deform=0;is-container=1;")
+					";width=730;height=722;image-file="+::DirectoryImg()+"\DICE_"+cValToChar(nValue)+".png;can-move=0;can-deform=0;is-container=1;")
 
 Return
 
@@ -238,6 +248,7 @@ Method NewGame(oP1,oP2,oP3,oP4) Class TLUDO
 	EndDo
 
 	::Play(nFst)
+	
 
 Return
 
@@ -245,6 +256,10 @@ Method PlayDice() Class TLUDO
 	Local aSoldier := {::oKingdom1:oSoldier1,::oKingdom1:oSoldier2,::oKingdom1:oSoldier3,::oKingdom1:oSoldier4}
 	Local lMove    := .F.
 	Local nX
+
+	If ValType(oBalloon) == "O"
+		oBalloon:Close()
+	EndIf
 
 	::RandomDice()
 
@@ -270,7 +285,13 @@ Method PlayDice() Class TLUDO
 	If lMove
 		::lTurn := .T.
 		::lDice := .F.
-		::StatusMsg("Movimente um soldado.")
+		::StatusMsg("Movimente um soldado do time AZUL.")
+		
+		If (::nValueDice == 1 .Or. ::nValueDice == 6) .And. aSoldier[1]:nTrack == 0 .And. aSoldier[2]:nTrack == 0 .And. aSoldier[3]:nTrack == 0 .And. aSoldier[4]:nTrack == 0
+			oBalloon := FWBalloon():New(170 , 325 ,150,120,::oTPanel,"Batalhe!",'Clique sobre um de seus soldados para sair para a batalha!', ;
+							FW_BALLOON_INFORMATION,BALLOON_POS_TOP_MIDDLE)
+		EndIf
+		
 	Else
 		::StatusMsg("Pulando jogada")
 		::Play(2)
@@ -420,6 +441,10 @@ Static Function LeftClick(oTLudo,nPosX,nPosY)
 	If !oTLudo:lTurn
 		oTLudo:StatusMsg("Jogue o dado.")
 		Return
+	EndIf
+
+	If ValType(oBalloon) == "O"
+		oBalloon:Close()
 	EndIf
 
 	If oSoldier:cKingdom == "BLUE" //Permite a movimentacao apenas para o reinado AZUL
