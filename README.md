@@ -10,12 +10,12 @@ Esta aplicação é um jogo de tabuleiro muito conhecido chamado [Ludo] (http://
 ![Rodados Advpl](https://raw.github.com/vitorebatista/advpl.ludo/master/docs/screenshot.png)
 
 ## Quick Start
-* Baixe os arquivos no formato .prw
-* Utilizando o [TDS] (http://ds.totvs.com/) compile o arquivo em seu ambiente
+* Baixe os arquivos no formato .prw e .png
+* Utilizando o [TDS] (http://ds.totvs.com/) compile os fontes e imagens.
 * Execute pelo [Totvs SmartClient] (http://tdn.totvs.com/display/tec/SmartClient) a função U_LUDO
 * Divirta-se!
 
 
 
 <pre>
-Copyright 2010 Vitor Emanuel Batista
+Copyright 2010 Felipe Nathan Welter / Vitor Emanuel Batista
