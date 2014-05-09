@@ -66,6 +66,7 @@ Class TLudo
 	Method ExportImage()
 
 	Method New(nRow,nCol,nWidth,nHeight,oWnd) CONSTRUCTOR
+	Method Activate()
 	Method SetId()
 	Method DirectoryImg()
 
@@ -77,7 +78,7 @@ Class TLudo
 
 	Method StatusMsg(cMsg)	//Imprime na tela texto informativo
 
-	Method NewGame(oP1,oP2,oP3,oP4) //Novo jogo
+	Method NewGame() //Novo jogo
 	Method Play(nVez)
 
 EndClass
@@ -115,9 +116,15 @@ Method New(nRow,nCol,nWidth,nHeight,oWnd) Class TLudo
 							{{236,436},{236,402},{236,368},{236,334},{236,300},{236,266}},; //GREEN
 							{{034,236},{068,236},{102,236},{136,236},{170,236},{204,236}}} //RED
 
+	// Exporta as imagens do RPO para o temporário %TEMP%
 	::ExportImage()
 
-	::oTPanel := tPaintPanel():New(nRow,nCol,nWidth,nHeight,oWnd)
+		
+Return Self
+
+Method Activate() Class TLUDO
+
+	::oTPanel := tPaintPanel():New(::nRow,::nCol,::nWidth,::nHeight,::oWnd)
 		::oTPanel:Align := CONTROL_ALIGN_ALLCLIENT
 
 		::oMGet:= tMultiget():New (10,260,{|u|if(Pcount()>0,cMGet:=u,cMGet)},::oTPanel,110,145,,.T.,,,,.T.,,,,,,.F.,,,,.F.,)
@@ -148,12 +155,14 @@ Method New(nRow,nCol,nWidth,nHeight,oWnd) Class TLudo
 		::oPlayer4 := 	TPlayer():New(2,::oKingdom4)
 
 		::StatusMsg("Tire o número 1 ou 6 para sair com o peão.")
+
+		::PrintDice(::nValueDice)
 		
 	
 	oBalloon := FWBalloon():New(190 , 550 ,150,120,::oTPanel,"Bem Vindo!",'Para iniciar com o jogo você deve "jogar" o dado. Torça para tirar os números 1 ou 6...', ;
 					FW_BALLOON_INFORMATION,BALLOON_POS_BOTTOM_MIDDLE)
-		
-Return Self
+
+Return
 
 //--------------------------------------------------------
 Method DirectoryImg() Class TLUDO
@@ -211,7 +220,7 @@ Method StatusMsg(cMsg) Class TLUDO
 Return
 
 //--------------------------------------------------------
-Method NewGame(oP1,oP2,oP3,oP4) Class TLUDO
+Method NewGame() Class TLUDO
 
 	Local aValues := Array(4)
 	Local nX := 1, nMax := 0, nFst := 0, nPlyrs := 0

@@ -90,7 +90,7 @@ Method New(nNumber,oParent) Class TLudoSoldier
 	::oParent:oParent:oTPanel:addShape(	"id="+cValToChar(::nID)+;
 													";type=8;left="+cValToChar(::nPosX)+;
 													";top="+cValToChar(::nPosY)+;
-													";width=42;height=38;image-file="+::cImage+";can-move=0;can-deform=0;is-container=1;"+cMark)
+													";width=42;height=38;image-file="+::cImage+";can-move=0;can-deform=0;is-container=0;"+cMark)
 
 	::nCP := 0 //nCP - Número de casas percorridas (até entrar na zona segura): n contido em N <= 52.
 	::nCR := 52 //nCR - Número de casas restantes (até entrar na zona segura): n contido em N <= 52.
@@ -193,8 +193,10 @@ Method setNewPos(nTrack,aTrack) Class TLudoSoldier
 
 		::oParent:oParent:oTPanel:SetPosition(::nID,::nPosX,::nPosY)
 		::oParent:oParent:oWnd:CommitControls()
+		sleep(10)
 	Else
-		::oParent:oParent:StatusMsg("ERRO COM O VALOR nTrack: " + cValToChar(nTrack)+CRLF+"aTrack: "+cValToChar(Len(aTrack)))
+		//TODO Verificar o porque de estar retornando um valor negativo
+		//::oParent:oParent:StatusMsg("ERRO COM O VALOR nTrack: " + cValToChar(nTrack)+CRLF+"aTrack: "+cValToChar(Len(aTrack)))
 	EndIf
 Return
 
