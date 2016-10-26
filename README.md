@@ -7,7 +7,7 @@ Esta aplicação é um jogo de tabuleiro muito conhecido chamado [Ludo] (http://
 
 
 ## Screenshot
-![Rodados Advpl](https://raw.github.com/vitorebatista/advpl.ludo/master/docs/screenshot.png)
+![Rodados Advpl](./docs/screenshot.png)
 
 ## Quick Start
 * Baixe os arquivos no formato .prw e .png
